@@ -1,0 +1,179 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #fffaf4;
+    color: #4b1825;
+    font-family: Georgia, serif;
+    text-align: center;
+}
+
+/* Header */
+
+header {
+    background-color: #541c2b;
+    color: #f5dfb0;
+    padding: 30px 15px;
+}
+
+header h1 {
+    font-size: 38px;
+    letter-spacing: 5px;
+}
+
+header p {
+    margin: 12px;
+    font-style: italic;
+}
+
+nav {
+    margin-top: 25px;
+}
+
+nav a {
+    color: #f5dfb0;
+    text-decoration: none;
+    margin: 15px;
+    font-size: 16px;
+}
+
+nav a:hover {
+    color: white;
+}
+
+/* Hero section */
+
+.hero {
+    padding: 110px 20px;
+    background: linear-gradient(135deg, #f5e6d3, #fffaf4);
+}
+
+.small-title {
+    letter-spacing: 4px;
+    color: #9c6b38;
+    font-size: 13px;
+}
+
+.hero h2 {
+    font-size: 48px;
+    margin: 25px 0;
+}
+
+.hero p {
+    margin-bottom: 30px;
+    font-size: 18px;
+}
+
+/* Buttons */
+
+.btn, .order-btn {
+    display: inline-block;
+    background-color: #541c2b;
+    color: #f5dfb0;
+    padding: 13px 25px;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-top: 15px;
+}
+
+.btn:hover, .order-btn:hover {
+    background-color: #9c6b38;
+    color: white;
+}
+
+/* Collection */
+
+#collection {
+    padding: 70px 25px;
+}
+
+#collection h2, #about h2, #contact h2 {
+    font-size: 34px;
+    margin-bottom: 20px;
+}
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.product-card {
+    background: white;
+    padding: 15px;
+    border: 1px solid #ead9c3;
+    border-radius: 8px;
+}
+
+.product-card img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.product-card h3 {
+    margin-top: 15px;
+}
+
+.order-btn {
+    font-size: 14px;
+}
+
+/* About and Contact */
+
+#about, #contact {
+    padding: 75px 20px;
+    background-color: #f4e8db;
+}
+
+#about p, #contact p {
+    max-width: 650px;
+    margin: auto;
+    line-height: 1.8;
+    font-size: 17px;
+}
+
+/* Footer */
+
+footer {
+    background-color: #541c2b;
+    color: #f5dfb0;
+    padding: 25px;
+}
+
+/* Mobile responsive */
+
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 27px;
+    }
+
+    nav a {
+        display: inline-block;
+        margin: 8px;
+    }
+
+    .hero h2 {
+        font-size: 34px;
+    }
+
+    .products {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .products {
+        grid-template-columns: 1fr;
+    }
+}
