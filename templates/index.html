@@ -15,15 +15,12 @@
     <p>Handcrafted with Love, Designed to Shine</p>
 
     <nav>
-       
-<nav>
-    <a href="#home">Home</a>
-    <a href="#collection">Collection</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
-    <a href="#location">Location</a>
-</nav>
-
+        <a href="#home">Home</a>
+        <a href="#collection">Collection</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <a href="#location">Location</a>
+        <a href="#cart">My Cart 🛒</a>
     </nav>
 </header>
 
@@ -39,17 +36,73 @@
     <p>Unique earrings, specially handmade for you.</p>
 
     <div class="products">
+
+        {% set prices = [80, 120, 80, 100, 180, 150, 80, 140, 120, 120] %}
+
         {% for i in range(1, 11) %}
         <div class="product-card">
+
             <img src="{{ url_for('static', filename='images/earring' ~ i ~ '.jpeg') }}"
                  alt="Handmade Kundan earrings">
+
             <h3>Handmade Design {{ i }}</h3>
-            <a href="https://www.instagram.com/_.dazzing._/"
-               target="_blank" class="order-btn">
-                Enquire on Instagram
-            </a>
+
+            <p>Price: ₹{{ prices[i-1] }}</p>
+
+            <button class="order-btn"
+                    onclick="addToCart({{ i }}, {{ prices[i-1] }})">
+                Add to Cart
+            </button>
+
         </div>
         {% endfor %}
+
+    </div>
+</section>
+
+<section id="cart">
+    <h2>My Shopping Cart 🛒</h2>
+
+    <div id="cart-items">
+        <p>Your cart is empty.</p>
+    </div>
+
+    <p>Product Subtotal: ₹<span id="product-total">0</span></p>
+    <p>Delivery Charge: ₹60</p>
+    <h3>Final Total: ₹<span id="cart-total">0</span></h3>
+
+    <button class="btn" onclick="clearCart()">Clear Cart</button>
+
+    <div id="checkout-form">
+        <h3>Delivery Details</h3>
+
+        <label for="customer-name">Full Name</label>
+        <input type="text" id="customer-name"
+               placeholder="Enter your full name" required>
+
+        <label for="customer-phone">Phone Number</label>
+        <input type="tel" id="customer-phone"
+               placeholder="Enter your phone number" required>
+
+        <label for="customer-address">Delivery Address</label>
+        <textarea id="customer-address"
+                  placeholder="Enter your full delivery address"
+                  required></textarea>
+
+        <button type="button" onclick="placeOrder()">
+            Continue to Order
+        </button>
+
+        <p id="order-message"></p>
+
+        <button
+            id="instagram-order-btn"
+            type="button"
+            onclick="sendOrderToInstagram()"
+            style="display: none;">
+            Send Order Details on Instagram
+        </button>
+
     </div>
 </section>
 
@@ -67,21 +120,15 @@
 <section id="contact">
     <h2>Let's Connect!</h2>
     <p>Discover more of our beautiful creations.</p>
+
     <a href="https://www.instagram.com/_.dazzing._/"
        target="_blank" class="btn">
         Visit Our Instagram
     </a>
 </section>
-<section id="contact"> 
-
-</section>
-<footer>
-    <p>© 2026 DAZZLING DESIGN | Handmade with Love ❤️</p>
-</footer>
 
 <section id="location">
     <h2>Find Us</h2>
-
     <p>DAZZLING DESIGN</p>
     <p>Payyanur, Kerala, India</p>
 
@@ -98,9 +145,194 @@
 
     <a href="https://www.google.com/maps?q=12.108917,75.236139"
        target="_blank" class="btn">
-       Get Directions
+        Get Directions
     </a>
 </section>
+
+<footer>
+    <p>© 2026 DAZZLING DESIGN | Handmade with Love ❤️</p>
+</footer>
+
+
+<script>
+
+let cart = [];
+
+// ADD TO CART
+function addToCart(id, price) {
+
+    let item = cart.find(product => product.id === id);
+
+    if (item) {
+        item.quantity++;
+    } else {
+        cart.push({
+            id: id,
+            price: price,
+            quantity: 1
+        });
+    }
+
+    displayCart();
+}
+
+
+// REMOVE PRODUCT
+function removeFromCart(id) {
+
+    cart = cart.filter(product => product.id !== id);
+
+    displayCart();
+}
+
+
+// DISPLAY CART
+function displayCart() {
+
+    let cartItems = document.getElementById("cart-items");
+    let total = 0;
+
+    if (cart.length === 0) {
+
+        cartItems.innerHTML = "<p>Your cart is empty.</p>";
+
+    } else {
+
+        cartItems.innerHTML = "";
+
+        cart.forEach(item => {
+
+            let subtotal = item.price * item.quantity;
+            total += subtotal;
+
+            cartItems.innerHTML += `
+                <div class="cart-item">
+                    <p>Handmade Design ${item.id}</p>
+                    <p>Price: ₹${item.price}</p>
+                    <p>Quantity: ${item.quantity}</p>
+                    <p>Subtotal: ₹${subtotal}</p>
+
+                    <button onclick="removeFromCart(${item.id})">
+                        Remove
+                    </button>
+                </div>
+            `;
+
+        });
+    }
+
+    document.getElementById("product-total").textContent = total;
+
+    let delivery = cart.length > 0 ? 60 : 0;
+
+    document.getElementById("cart-total").textContent =
+        total + delivery;
+}
+
+
+// CLEAR CART
+function clearCart() {
+
+    cart = [];
+
+    displayCart();
+}
+
+
+// PLACE ORDER
+function placeOrder() {
+
+    if (cart.length === 0) {
+        alert("Please add products to your cart first.");
+        return;
+    }
+
+    let name = document.getElementById("customer-name").value.trim();
+    let phone = document.getElementById("customer-phone").value.trim();
+    let address = document.getElementById("customer-address").value.trim();
+
+    if (!name || !phone || !address) {
+        alert("Please fill in all delivery details.");
+        return;
+    }
+
+    if (!/^[0-9]{10}$/.test(phone)) {
+        alert("Please enter a valid 10-digit phone number.");
+        return;
+    }
+
+    let productTotal = cart.reduce(
+        (sum, item) => sum + item.price * item.quantity, 0
+    );
+
+    let delivery = 60;
+    let finalTotal = productTotal + delivery;
+
+    document.getElementById("order-message").textContent =
+        "Thank you, " + name + "!\n" +
+        "Your order details have been entered.\n" +
+        "Product Total: ₹" + productTotal + "\n" +
+        "Delivery: ₹" + delivery + "\n" +
+        "Final Total: ₹" + finalTotal + "\n" +
+        "Delivery Address: " + address + "\n" +
+        "Payment setup is coming next.";
+
+    document.getElementById("instagram-order-btn").style.display =
+        "inline-block";
+}
+
+
+// SEND ORDER DETAILS TO INSTAGRAM
+function sendOrderToInstagram() {
+
+    let name = document.getElementById("customer-name").value.trim();
+    let phone = document.getElementById("customer-phone").value.trim();
+    let address = document.getElementById("customer-address").value.trim();
+
+    let productTotal = cart.reduce(
+        (sum, item) => sum + item.price * item.quantity, 0
+    );
+
+    let orderDetails = "DAZZLING DESIGN - NEW ORDER\n\n";
+
+    orderDetails += "Customer: " + name + "\n";
+    orderDetails += "Phone: " + phone + "\n";
+    orderDetails += "Address: " + address + "\n\n";
+
+    cart.forEach(item => {
+
+        orderDetails += "Earring " + item.id +
+            " - Quantity: " + item.quantity +
+            " - Price: ₹" + (item.price * item.quantity) + "\n";
+
+    });
+
+    orderDetails += "\nProduct Total: ₹" + productTotal;
+    orderDetails += "\nDelivery: ₹60";
+    orderDetails += "\nFinal Total: ₹" + (productTotal + 60);
+
+    // Open Instagram
+    window.open(
+        "https://www.instagram.com/_.dazzing._/",
+        "_blank"
+    );
+
+    // Copy order details
+    navigator.clipboard.writeText(orderDetails)
+        .then(() => {
+            alert(
+                "Order details copied! Paste them into our Instagram message."
+            );
+        })
+        .catch(() => {
+            prompt(
+                "Please copy your order details:",
+                orderDetails
+            );
+        });
+}
+
+</script>
 
 </body>
 </html>
